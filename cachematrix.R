@@ -1,15 +1,44 @@
-## Put comments here that give an overall description of what your
-## functions do
+####
+# matrix wrapper object that maintains cached values
+makeCacheMatrix <- function(mCache = matrix()) {
+	invCache <- NULL
 
-## Write a short comment describing this function
+	set <- function(m) {
+		mCache <<- m
+		invCache <<- NULL # invalidate dependent objects here
+	}
+	get <- function() mCache
+	setinv <- function(inv) invCache <<- inv
+	getinv <- function() invCache
 
-makeCacheMatrix <- function(x = matrix()) {
-
+	list(
+	    set = set
+	  , get = get
+	  , setinv = setinv
+	  , getinv = getinv
+	)
 }
 
+####
+# invert a matrix wrapper object and cache the result for subsequent calls
+cacheSolve <- function(m, ...) {
+	inv <- m$getinv()
+	if(!is.null(inv)) {
+		message("getting cached data")
+		return(inv)
+	}
 
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+	# do the heavy lifting here
+	inv <- solve(m$get(), ...)
+	m$setinv(inv)
+	inv
 }
+
+####
+# test it!
+#N <- 3
+#m <- matrix(floor(runif(N*N, 0, 100)), ncol=N)
+#m
+#mWrapped <- makeCacheMatrix(m)
+#cacheSolve(mWrapped)
+#cacheSolve(mWrapped)
