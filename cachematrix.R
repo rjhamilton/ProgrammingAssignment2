@@ -1,5 +1,8 @@
 ####
-# matrix wrapper object that maintains cached values
+# Programming Assignment 2
+
+####
+# create a matrix wrapper object that maintains cached values
 makeCacheMatrix <- function(mCache = matrix()) {
 	invCache <- NULL
 
@@ -8,9 +11,11 @@ makeCacheMatrix <- function(mCache = matrix()) {
 		invCache <<- NULL # invalidate dependent objects here
 	}
 	get <- function() mCache
+
 	setinv <- function(inv) invCache <<- inv
 	getinv <- function() invCache
 
+	# return get/set functions to cached values
 	list(
 	    set = set
 	  , get = get
@@ -20,7 +25,7 @@ makeCacheMatrix <- function(mCache = matrix()) {
 }
 
 ####
-# invert a matrix wrapper object and cache the result for subsequent calls
+# invert a wrapped matrix object and cache the result for subsequent calls
 cacheSolve <- function(m, ...) {
 	inv <- m$getinv()
 	if(!is.null(inv)) {
@@ -28,7 +33,7 @@ cacheSolve <- function(m, ...) {
 		return(inv)
 	}
 
-	# do the heavy lifting here
+	# not cached, do the heavy lifting here
 	inv <- solve(m$get(), ...)
 	m$setinv(inv)
 	inv
@@ -40,5 +45,5 @@ cacheSolve <- function(m, ...) {
 #m <- matrix(floor(runif(N*N, 0, 100)), ncol=N)
 #m
 #mWrapped <- makeCacheMatrix(m)
-#cacheSolve(mWrapped)
-#cacheSolve(mWrapped)
+#cacheSolve(mWrapped) # expected result: no message
+#cacheSolve(mWrapped) # expected result: "getting cached data" message
